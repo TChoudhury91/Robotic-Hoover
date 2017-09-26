@@ -1,11 +1,12 @@
 package com.tanvirchoudhury.robotichoover.resource
 
-import com.tanvirchoudhury.robotichoover.dto.CleanEnvironmentDto
-import com.tanvirchoudhury.robotichoover.dto.UncleanEnvironmentDto
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto
 import com.tanvirchoudhury.robotichoover.service.HooverCleanService
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 import spock.lang.Subject
+
+import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentDtoFixtures.aUncleanEnvironment
 
 class RoboticHooverControllerTest extends Specification {
 
@@ -22,11 +23,7 @@ class RoboticHooverControllerTest extends Specification {
     def "A received UncleanEnvironmentDto will start and return the result of the cleaning process"() {
 
         given: "A unclean environment"
-        def uncleanEnvDto = new UncleanEnvironmentDto(
-                roomSize: [5, 5],
-                coords: [4, 4],
-                patches: [[1,1], [2,2]],
-                instructions: "NNWES")
+        def uncleanEnvDto = aUncleanEnvironment()
 
         and: "A clean environment"
         def cleanEnvDto = new CleanEnvironmentDto()

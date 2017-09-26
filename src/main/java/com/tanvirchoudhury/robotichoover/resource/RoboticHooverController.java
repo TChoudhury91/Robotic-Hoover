@@ -1,7 +1,7 @@
 package com.tanvirchoudhury.robotichoover.resource;
 
-import com.tanvirchoudhury.robotichoover.dto.CleanEnvironmentDto;
-import com.tanvirchoudhury.robotichoover.dto.UncleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.service.HooverCleanService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.tanvirchoudhury.robotichoover.service;
 
-import com.tanvirchoudhury.robotichoover.dto.CleanEnvironmentDto;
-import com.tanvirchoudhury.robotichoover.dto.UncleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,4 +1,4 @@
-package com.tanvirchoudhury.robotichoover.dto;
+package com.tanvirchoudhury.robotichoover.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
