@@ -4,12 +4,12 @@ import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto
 
 class UncleanEnvironmentDtoFixtures {
 
-    static UncleanEnvironmentDto aUncleanEnvironment() {
+    static UncleanEnvironmentDto aUncleanEnvironmentDto(params = [:]) {
         new UncleanEnvironmentDto(
-                roomSize: [5, 5],
-                coords: [4, 4],
-                patches: [[1,1], [2,2]],
-                instructions: "NNWES")
+                roomSize: params?.roomSize ?: [5, 5],
+                coords: params?.coords ?: [4, 4],
+                patches: params?.patches ?: [[1, 1], [2, 2]],
+                instructions: params?.instructions ?: "NNWES")
     }
 
 }

@@ -2,7 +2,7 @@ package com.tanvirchoudhury.robotichoover.resource;
 
 import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
-import com.tanvirchoudhury.robotichoover.service.HooverCleanService;
+import com.tanvirchoudhury.robotichoover.service.RoboticHooverService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoboticHooverController {
 
     @Autowired
-    private final HooverCleanService hooverCleanService;
+    private final RoboticHooverService roboticHooverService;
 
     @PostMapping(value = "/robotic-hoover/clean", produces = "application/json", consumes = "application/json")
     public ResponseEntity<CleanEnvironmentDto> clean(@RequestBody UncleanEnvironmentDto uncleanEnvironmentDto) {
-        CleanEnvironmentDto cleanEnvironmentDto = hooverCleanService.cleanEnvironment(uncleanEnvironmentDto);
+        CleanEnvironmentDto cleanEnvironmentDto = roboticHooverService.cleanEnvironment(uncleanEnvironmentDto);
         return ResponseEntity.ok(cleanEnvironmentDto);
     }
 }

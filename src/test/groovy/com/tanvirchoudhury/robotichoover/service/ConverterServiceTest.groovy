@@ -4,7 +4,7 @@ import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentDtoFixtures.aUncleanEnvironment
+import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentDtoFixtures.aUncleanEnvironmentDto
 
 class ConverterServiceTest extends Specification {
 
@@ -18,7 +18,7 @@ class ConverterServiceTest extends Specification {
     def "UncleanEnvironmentDto is converted to a UncleanEnvironment correctly"() {
 
         given: "A unclean environment"
-        def uncleanEnvDto = aUncleanEnvironment()
+        def uncleanEnvDto = aUncleanEnvironmentDto()
 
         when: "Unclean environment Dto is converted to a unclean enviorment"
         UncleanEnvironment result = subject.convertToUncleanEnvironment(uncleanEnvDto)
@@ -33,8 +33,8 @@ class ConverterServiceTest extends Specification {
 
         result.patches.size() == uncleanEnvDto.patches.size()
         for (int c = 0; c < uncleanEnvDto.patches.size(); c++) {
-            result.patches.get(c).x == uncleanEnvDto.patches.get(c).get(0)
-            result.patches.get(c).y == uncleanEnvDto.patches.get(c).get(1)
+            assert result.patches.get(c).x == uncleanEnvDto.patches.get(c).get(0)
+            assert result.patches.get(c).y == uncleanEnvDto.patches.get(c).get(1)
         }
 
         result.instructions == uncleanEnvDto.instructions

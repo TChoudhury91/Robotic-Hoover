@@ -1,15 +1,26 @@
 package com.tanvirchoudhury.robotichoover.service;
 
+import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment;
 import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HooverCleanService {
+@AllArgsConstructor
+public class RoboticHooverService {
+
+/*    @Autowired
+    private final ConverterService service;*/
 
     public CleanEnvironmentDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
 
         return new CleanEnvironmentDto();
+    }
+
+    private UncleanEnvironment startClean(UncleanEnvironment uncleanEnvironment) {
+
+        return null;
     }
 
 }

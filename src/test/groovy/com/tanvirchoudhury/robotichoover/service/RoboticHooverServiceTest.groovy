@@ -3,15 +3,13 @@ package com.tanvirchoudhury.robotichoover.service
 import spock.lang.Specification
 import spock.lang.Subject
 
-class HooverCleanServiceTest extends Specification {
+class RoboticHooverServiceTest extends Specification {
 
     @Subject
-    HooverCleanService subject
+    RoboticHooverService subject
 
     def setup() {
-        subject = new HooverCleanService()
+        subject = new RoboticHooverService()
     }
-
-
 
 }
