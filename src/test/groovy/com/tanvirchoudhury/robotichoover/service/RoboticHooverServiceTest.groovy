@@ -8,8 +8,11 @@ class RoboticHooverServiceTest extends Specification {
     @Subject
     RoboticHooverService subject
 
+    ConverterService converterService
+
     def setup() {
-        subject = new RoboticHooverService()
+        converterService = Mock()
+        subject = new RoboticHooverService(converterService)
     }
 
 }

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class RoboticHooverService {
 
+    private final ConverterService converterService;
+
     public CleanEnvironmentDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
 
         return new CleanEnvironmentDto();

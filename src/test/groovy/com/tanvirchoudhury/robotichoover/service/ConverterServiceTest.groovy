@@ -31,10 +31,11 @@ class ConverterServiceTest extends Specification {
         result.coords.x == uncleanEnvDto.coords.first()
         result.coords.y == uncleanEnvDto.coords.get(1)
 
-        result.patches.size() == uncleanEnvDto.patches.size()
-        for (int c = 0; c < uncleanEnvDto.patches.size(); c++) {
-            assert result.patches.get(c).x == uncleanEnvDto.patches.get(c).get(0)
-            assert result.patches.get(c).y == uncleanEnvDto.patches.get(c).get(1)
+        def patchesCoordinates = result.patches.coordinates
+        patchesCoordinates.size() == uncleanEnvDto.patches.size()
+        for (int c = 0; c < patchesCoordinates.size(); c++) {
+            assert patchesCoordinates.get(c).x == uncleanEnvDto.patches.get(c).get(0)
+            assert patchesCoordinates.get(c).y == uncleanEnvDto.patches.get(c).get(1)
         }
 
         result.instructions == uncleanEnvDto.instructions
