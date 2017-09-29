@@ -21,7 +21,7 @@ public class ConverterService {
                 .roomSize(extractCoordinates(uncleanEnvironmentDto.getRoomSize()))
                 .coords(extractCoordinates(uncleanEnvironmentDto.getCoords()))
                 .patches(extractListOfCoordinates(uncleanEnvironmentDto.getPatches()))
-                .instructions(uncleanEnvironmentDto.getInstructions())
+                .instructions(uncleanEnvironmentDto.getInstructions().toUpperCase())
                 .build();
     }
 
@@ -29,13 +29,13 @@ public class ConverterService {
         return new Coordinates(coordinates.get(0), coordinates.get(1));
     }
 
+    //TODO do not include patches of dirt that are y
     private static Patches extractListOfCoordinates(List<List<Integer>> listOfCoordinates) {
-        Patches patches = new Patches();
         List<Coordinates> coordinates = listOfCoordinates.stream()
                 .map(ConverterService::extractCoordinates)
                 .collect(toList());
 
-        patches.setCoordinates(coordinates);
+        Patches patches = new Patches(coordinates);
         coordinates.forEach(coords -> coords.setPatches(patches));
 
         return patches;

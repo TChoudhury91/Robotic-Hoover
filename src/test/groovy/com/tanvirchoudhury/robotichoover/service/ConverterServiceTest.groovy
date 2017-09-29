@@ -3,6 +3,7 @@ package com.tanvirchoudhury.robotichoover.service
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment
 import spock.lang.Specification
 import spock.lang.Subject
+import spock.lang.Unroll
 
 import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentDtoFixtures.aUncleanEnvironmentDto
 
@@ -15,10 +16,11 @@ class ConverterServiceTest extends Specification {
         subject = new ConverterService()
     }
 
+    @Unroll
     def "UncleanEnvironmentDto is converted to a UncleanEnvironment correctly"() {
 
         given: "A unclean environment"
-        def uncleanEnvDto = aUncleanEnvironmentDto()
+        def uncleanEnvDto = aUncleanEnvironmentDto(instructions: instructions)
 
         when: "Unclean environment Dto is converted to a unclean enviorment"
         UncleanEnvironment result = subject.convertToUncleanEnvironment(uncleanEnvDto)
@@ -38,7 +40,11 @@ class ConverterServiceTest extends Specification {
             assert patchesCoordinates.get(c).y == uncleanEnvDto.patches.get(c).get(1)
         }
 
-        result.instructions == uncleanEnvDto.instructions
-    }
+        result.instructions == expectedInstructions
 
+        where:
+        instructions | expectedInstructions
+        "NNWES"      | "NNWES"
+        "nwse"       | "NWSE"
+    }
 }

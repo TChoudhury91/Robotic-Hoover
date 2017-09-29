@@ -1,7 +1,7 @@
 package com.tanvirchoudhury.robotichoover.model.db;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -13,7 +13,7 @@ import static javax.persistence.CascadeType.PERSIST;
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class Patches extends BaseDomainObject{
 
     @OneToMany(mappedBy = "patches", cascade = PERSIST)
