@@ -3,23 +3,25 @@ package com.tanvirchoudhury.robotichoover.service;
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment;
 import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
-import lombok.AllArgsConstructor;
+import com.tanvirchoudhury.robotichoover.repository.UncleanEnvironmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.tanvirchoudhury.robotichoover.service.ConverterService.convertToUncleanEnvironment;
+import static com.tanvirchoudhury.robotichoover.service.ValidatorService.isValid;
+
 @Service
-@AllArgsConstructor
 public class RoboticHooverService {
 
-    private final ConverterService converterService;
+    @Autowired
+    UncleanEnvironmentRepository uncleanEnvironmentRepository;
 
     public CleanEnvironmentDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
-
-        return new CleanEnvironmentDto();
-    }
-
-    private UncleanEnvironment startClean(UncleanEnvironment uncleanEnvironment) {
+        if(isValid(uncleanEnvironmentDto)) {
+            UncleanEnvironment uncleanEnvironment = convertToUncleanEnvironment(uncleanEnvironmentDto);
+            uncleanEnvironmentRepository.save(uncleanEnvironment);
+        }
 
         return null;
     }
-
 }

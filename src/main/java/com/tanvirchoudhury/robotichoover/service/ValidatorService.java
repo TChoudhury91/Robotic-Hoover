@@ -15,7 +15,7 @@ public class ValidatorService {
 
     private static final int MAX_SINGLE_PAIR_COORDS_SIZE = 2;
 
-    public boolean isValid(UncleanEnvironmentDto uncleanEnvironmentDto) {
+    public static boolean isValid(UncleanEnvironmentDto uncleanEnvironmentDto) {
         if (isMandatoryInputDataEmpty(uncleanEnvironmentDto)) {
             throw new InvalidInputDataException("Empty input data inserted");
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getRoomSize())) {

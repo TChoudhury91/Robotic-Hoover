@@ -8,12 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.List;
 
+import static javax.persistence.CascadeType.PERSIST;
+
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 public class Patches extends BaseDomainObject{
 
-    @OneToMany(mappedBy = "patches")
+    @OneToMany(mappedBy = "patches", cascade = PERSIST)
     private List<Coordinates> coordinates;
 }
