@@ -1,11 +1,14 @@
 package com.tanvirchoudhury.robotichoover.service
 
+import com.tanvirchoudhury.robotichoover.model.db.CleanEnvironmentResult
+import com.tanvirchoudhury.robotichoover.model.db.Coordinates
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
 
 import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentDtoFixtures.aUncleanEnvironmentDto
+import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentFixtures.uncleanEnvironmentFromTestExample
 
 class ConverterServiceTest extends Specification {
 
@@ -67,4 +70,41 @@ class ConverterServiceTest extends Specification {
         }
     }
 
+    def "Unclean Environment is converted to a CurrentCleanStatus"() {
+
+        given: "Unclean Environment"
+        def uncleanEnv = uncleanEnvironmentFromTestExample()
+
+        when: "Converting a Unclean Environment"
+        def result = subject.convertToCurrentCleanStatus(uncleanEnv)
+
+        then: "Returns the expected Current Clean Status"
+        result.roomSize.x == uncleanEnv.roomSize.getX()
+        result.roomSize.y == uncleanEnv.roomSize.getY()
+        result.currentCoords.x == uncleanEnv.coords.getX()
+        result.currentCoords.y == uncleanEnv.coords.getY()
+
+        def patchesCoordinates = result.patches
+        def uncleanEnvPatches = uncleanEnv.patches.coordinates
+        patchesCoordinates.size() == uncleanEnvPatches.size()
+        for (int c = 0; c < patchesCoordinates.size(); c++) {
+            assert patchesCoordinates.get(c).x == uncleanEnvPatches.get(c).getX()
+            assert patchesCoordinates.get(c).y == uncleanEnvPatches.get(c).getY()
+        }
+    }
+
+    def "CleanEnvironmentResult is converted to CleanEnvironmentResultDto"() {
+
+        given: "Clean Environment"
+        def cleanEnv = new CleanEnvironmentResult(new Coordinates(4, 5), 2)
+
+        when:
+        def result = subject.convertToCleanEnvironmentResultDto(cleanEnv)
+
+        then:
+        result.coords[0] == 4
+        result.coords[1] == 5
+
+        result.patches == 2
+    }
 }

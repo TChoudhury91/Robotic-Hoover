@@ -22,7 +22,7 @@ public class ValidatorService {
     private static final String INVALID_PATCHES_ERR = "Invalid patches, need to provide a list of positive (x,y) coordinates";
     private static final String INVALID_CARDINAL_DIR_ERR = "Invalid cardinal directions, N E S W are permitted";
 
-    public boolean isValid(UncleanEnvironmentDto uncleanEnvironmentDto) {
+    public void validateUncleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
         if (isMandatoryInputDataEmpty(uncleanEnvironmentDto)) {
             reportError(EMPTY_INPUT_ERR);
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getRoomSize())) {
@@ -34,7 +34,6 @@ public class ValidatorService {
         } else if (!isInstructionsValid(uncleanEnvironmentDto.getInstructions())) {
             reportError(INVALID_CARDINAL_DIR_ERR);
         }
-        return true;
     }
 
     private static boolean isMandatoryInputDataEmpty(UncleanEnvironmentDto uncleanEnvironmentDto) {

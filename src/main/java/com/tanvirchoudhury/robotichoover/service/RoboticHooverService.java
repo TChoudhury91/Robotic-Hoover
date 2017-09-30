@@ -1,13 +1,16 @@
 package com.tanvirchoudhury.robotichoover.service;
 
 import com.tanvirchoudhury.robotichoover.model.CurrentCleanStatus;
+import com.tanvirchoudhury.robotichoover.model.db.CleanEnvironmentResult;
 import com.tanvirchoudhury.robotichoover.model.db.Coordinates;
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment;
-import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentResultDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.repository.CleanEnvironmentResultRepository;
 import com.tanvirchoudhury.robotichoover.repository.UncleanEnvironmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -18,29 +21,24 @@ public class RoboticHooverService {
     private static final char SOUTH = 'S';
     private static final char WEST = 'W';
 
+    private final CleanEnvironmentResultRepository cleanEnvironmentResultRepository;
     private final ConverterService converterService;
     private final UncleanEnvironmentRepository uncleanEnvironmentRepository;
     private final ValidatorService validatorService;
 
-    public CleanEnvironmentDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
-        if (validatorService.isValid(uncleanEnvironmentDto)) {
-            UncleanEnvironment uncleanEnvironment = converterService.convertToUncleanEnvironment(uncleanEnvironmentDto);
-            uncleanEnvironmentRepository.save(uncleanEnvironment);
-        }
-
-        return null;
+    @Transactional
+    public CleanEnvironmentResultDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
+        validatorService.validateUncleanEnvironment(uncleanEnvironmentDto);
+        UncleanEnvironment uncleanEnvironment = converterService.convertToUncleanEnvironment(uncleanEnvironmentDto);
+        uncleanEnvironmentRepository.save(uncleanEnvironment);
+        CurrentCleanStatus currentCleanStatus = startCleaningProcess(uncleanEnvironment);
+        CleanEnvironmentResult cleanEnvironmentResult = converterService.convertToCleanEnvironment(currentCleanStatus);
+        cleanEnvironmentResultRepository.save(cleanEnvironmentResult);
+        return converterService.convertToCleanEnvironmentResultDto(cleanEnvironmentResult);
     }
-
-    private CurrentCleanStatus createCurrentCleanStatus(UncleanEnvironment uncleanEnvironment) {
-        return new CurrentCleanStatus(uncleanEnvironment.getCoords(),
-                uncleanEnvironment.getPatches().getCoordinates(),
-                0,
-                uncleanEnvironment.getRoomSize());
-    }
-
 
     private CurrentCleanStatus startCleaningProcess(UncleanEnvironment uncleanEnvironment) {
-        CurrentCleanStatus currentCleanStatus = createCurrentCleanStatus(uncleanEnvironment);
+        CurrentCleanStatus currentCleanStatus = converterService.convertToCurrentCleanStatus(uncleanEnvironment);
         for (char c : uncleanEnvironment.getInstructions().toCharArray()) {
             currentCleanStatus = moveHoover(currentCleanStatus, c);
         }
@@ -51,8 +49,7 @@ public class RoboticHooverService {
         Coordinates cardinalDirectionCoords = cardinalDirectionToCoords(cardinalDirection);
 
         Coordinates currentCoords = currentCleanStatus.getCurrentCoords();
-        currentCoords.setX(currentCoords.getX() + cardinalDirectionCoords.getX());
-        currentCoords.setY(currentCoords.getY() + cardinalDirectionCoords.getY());
+        calculateMove(currentCoords, cardinalDirectionCoords, currentCleanStatus.getRoomSize());
 
         for (int i = 0; i < currentCleanStatus.getPatches().size(); i++) {
             Coordinates patchCoords = currentCleanStatus.getPatches().get(i);
@@ -64,6 +61,16 @@ public class RoboticHooverService {
         }
 
         return currentCleanStatus;
+    }
+
+    private void calculateMove(Coordinates currentCoords, Coordinates cardinalDirectionCoords, Coordinates roomSize) {
+        int newXPositon = currentCoords.getX() + cardinalDirectionCoords.getX();
+        int newYPositon = currentCoords.getY() + cardinalDirectionCoords.getY();
+
+        if (newXPositon <= roomSize.getX() && newYPositon <= roomSize.getY()) {
+            currentCoords.setX(newXPositon);
+            currentCoords.setY(newYPositon);
+        }
     }
 
     private Coordinates cardinalDirectionToCoords(char cardinalDirection) {
@@ -80,6 +87,4 @@ public class RoboticHooverService {
                 return new Coordinates(0, 0);
         }
     }
-
-
 }

@@ -1,6 +1,6 @@
 package com.tanvirchoudhury.robotichoover.resource
 
-import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentResultDto
 import com.tanvirchoudhury.robotichoover.service.RoboticHooverService
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
@@ -26,7 +26,7 @@ class RoboticHooverControllerTest extends Specification {
         def uncleanEnvDto = aUncleanEnvironmentDto()
 
         and: "A clean environment"
-        def cleanEnvDto = new CleanEnvironmentDto()
+        def cleanEnvDto = new CleanEnvironmentResultDto([1, 2], 3)
 
         when: "A clean is requested"
         def result = subject.clean(uncleanEnvDto)

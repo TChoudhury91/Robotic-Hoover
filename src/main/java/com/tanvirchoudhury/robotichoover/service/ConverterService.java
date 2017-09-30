@@ -1,11 +1,15 @@
 package com.tanvirchoudhury.robotichoover.service;
 
+import com.tanvirchoudhury.robotichoover.model.CurrentCleanStatus;
+import com.tanvirchoudhury.robotichoover.model.db.CleanEnvironmentResult;
 import com.tanvirchoudhury.robotichoover.model.db.Coordinates;
 import com.tanvirchoudhury.robotichoover.model.db.Patches;
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment;
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentResultDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -41,6 +45,31 @@ public class ConverterService {
         coordinates.forEach(coords -> coords.setPatches(patches));
 
         return patches;
+    }
+
+    public CleanEnvironmentResult convertToCleanEnvironment(CurrentCleanStatus currentCleanStatus) {
+       return new CleanEnvironmentResult(currentCleanStatus.getCurrentCoords(),
+               currentCleanStatus.getPatchesCleaned());
+    }
+
+    public CurrentCleanStatus convertToCurrentCleanStatus(UncleanEnvironment uncleanEnvironment) {
+        Coordinates currentCoords = new Coordinates(uncleanEnvironment.getCoords().getX(), uncleanEnvironment.getCoords().getY());
+
+        List<Coordinates> patches = uncleanEnvironment.getPatches().getCoordinates().stream()
+                .map(coords -> new Coordinates(coords.getX(), coords.getY()))
+                .collect(toList());
+
+        return new CurrentCleanStatus(currentCoords,
+                patches,
+                0,
+                uncleanEnvironment.getRoomSize());
+    }
+
+    public CleanEnvironmentResultDto convertToCleanEnvironmentResultDto(CleanEnvironmentResult cleanEnvironmentResult) {
+        List<Integer> coords = new ArrayList<>();
+        coords.add(cleanEnvironmentResult.getCoords().getX());
+        coords.add(cleanEnvironmentResult.getCoords().getY());
+        return new CleanEnvironmentResultDto(coords, cleanEnvironmentResult.getPatches());
     }
 
 

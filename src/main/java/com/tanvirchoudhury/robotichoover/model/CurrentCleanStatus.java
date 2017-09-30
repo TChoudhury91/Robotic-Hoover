@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CurrentCleanStatus {
 
-    @Setter
     private Coordinates currentCoords;
 
     @Setter

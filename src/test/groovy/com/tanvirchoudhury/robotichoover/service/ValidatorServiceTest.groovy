@@ -21,7 +21,7 @@ class ValidatorServiceTest extends Specification {
     def "If invalid unclean environment data is passed in, then a validation error with the correct message is thrown"() {
 
         when: "Invalid unclean Environment is validated"
-        subject.isValid(uncleanEnv)
+        subject.validateUncleanEnvironment(uncleanEnv)
 
         then: "Error is thrown with the correct error message"
         InvalidInputDataException ex = thrown()
@@ -42,7 +42,7 @@ class ValidatorServiceTest extends Specification {
     def "If empty unclean environment dto is passed in, then a validation error with the correct message is thrown"() {
 
         when: "An empty input data is in a unclean Environment"
-        subject.isValid(uncleanEnv)
+        subject.validateUncleanEnvironment(uncleanEnv)
 
         then:
         InvalidInputDataException ex = thrown()
@@ -63,10 +63,10 @@ class ValidatorServiceTest extends Specification {
     def "Returns true given a valid unclean environment"() {
 
         when: "Invalid unclean Environment is validated"
-        def result = subject.isValid(uncleanEnv)
+        subject.validateUncleanEnvironment(uncleanEnv)
 
         then: "It is valid"
-        result
+        noExceptionThrown()
 
         where:
         uncleanEnv << [aUncleanEnvironmentDto(), aUncleanEnvironmentDto(instructions: "nnwe")]

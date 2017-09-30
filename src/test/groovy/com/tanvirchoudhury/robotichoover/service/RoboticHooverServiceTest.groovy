@@ -1,14 +1,13 @@
 package com.tanvirchoudhury.robotichoover.service
 
 import com.tanvirchoudhury.robotichoover.model.db.Coordinates
+import com.tanvirchoudhury.robotichoover.repository.CleanEnvironmentResultRepository
 import com.tanvirchoudhury.robotichoover.repository.UncleanEnvironmentRepository
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
 
-import static com.tanvirchoudhury.robotichoover.fixtures.CurrentCleanStatusFixtures.aCurrentClean
-import static com.tanvirchoudhury.robotichoover.fixtures.CurrentCleanStatusFixtures.aCurrentCleanWithAGivenPatch
+import static com.tanvirchoudhury.robotichoover.fixtures.CurrentCleanStatusFixtures.*
 import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentFixtures.uncleanEnvironmentFromTestExample
 import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentFixtures.uncleanEnvironmentWithMultipleCleanedPatchesScenario
 
@@ -20,14 +19,16 @@ class RoboticHooverServiceTest extends Specification {
     ConverterService converterService
     ValidatorService validatorService
 
+    CleanEnvironmentResultRepository cleanEnvironmentResultRepository
     UncleanEnvironmentRepository uncleanEnvironmentRepository
 
     def setup() {
+        cleanEnvironmentResultRepository = Mock()
         converterService = new ConverterService()
         uncleanEnvironmentRepository = Mock()
         validatorService = new ValidatorService()
 
-        subject = new RoboticHooverService(converterService, uncleanEnvironmentRepository, validatorService)
+        subject = new RoboticHooverService(cleanEnvironmentResultRepository, converterService, uncleanEnvironmentRepository, validatorService)
     }
 
     def "Cleaning process cleans a patch"() {
@@ -52,29 +53,6 @@ class RoboticHooverServiceTest extends Specification {
         result.patchesCleaned == 3
     }
 
-    def "Unclean Environment is converted to a CurrentCleanStatus"() {
-
-        given: "Unclean Environment"
-        def uncleanEnv = uncleanEnvironmentFromTestExample()
-
-        when: "Converting a Unclean Environment"
-        def result = subject.createCurrentCleanStatus(uncleanEnv)
-
-        then: "Returns the expected Current Clean Status"
-        result.roomSize.x == uncleanEnv.roomSize.getX()
-        result.roomSize.y == uncleanEnv.roomSize.getY()
-        result.currentCoords.x == uncleanEnv.coords.getX()
-        result.currentCoords.y == uncleanEnv.coords.getY()
-
-        def patchesCoordinates = result.patches
-        def uncleanEnvPatches = uncleanEnv.patches.coordinates
-        patchesCoordinates.size() == uncleanEnvPatches.size()
-        for (int c = 0; c < patchesCoordinates.size(); c++) {
-            assert patchesCoordinates.get(c).x == uncleanEnvPatches.get(c).getX()
-            assert patchesCoordinates.get(c).y == uncleanEnvPatches.get(c).getY()
-        }
-    }
-
     @Unroll
     def "Cardinal directions are converted to the correct coordinates"() {
 
@@ -97,10 +75,10 @@ class RoboticHooverServiceTest extends Specification {
     def "Given a cardinal direction, it will update the CurrentCleanProcess accordingly"() {
 
         given:
-        def currentClean = aCurrentClean()
+        def currentClean = aCurrentCleanStatus()
 
         when:
-        def result = subject.moveHoover(aCurrentClean(), cardinalCoords as char)
+        def result = subject.moveHoover(aCurrentCleanStatus(), cardinalCoords as char)
 
         then:
         result.roomSize.x == currentClean.roomSize.x
@@ -121,7 +99,7 @@ class RoboticHooverServiceTest extends Specification {
     def "When a hoover goes over a patch, that patch is removed from CurrentCleanProcess and patchesCleaned is incremented"() {
 
         given:
-        def currentClean = aCurrentCleanWithAGivenPatch(patches)
+        def currentClean = aCurrentCleanStatusWithAGivenPatch(patches)
 
         when:
         def result = subject.moveHoover(currentClean, cardinalDirections as char)
@@ -139,4 +117,20 @@ class RoboticHooverServiceTest extends Specification {
 
     }
 
+    @Unroll
+    def "Hoover will stay in place when cardinal intrustions goes outside of room wall"() {
+
+        given:
+        def currentClean = aCurrentCleanStatusOnBoundaryEdge()
+
+        when:
+        def result = subject.moveHoover(currentClean, cardinalDirections as char)
+
+        then:
+        result.currentCoords.getX() == 4
+        result.currentCoords.getY() == 4
+
+        where:
+        cardinalDirections << ['N', 'E']
+    }
 }

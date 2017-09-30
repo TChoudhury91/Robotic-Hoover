@@ -1,6 +1,6 @@
 package com.tanvirchoudhury.robotichoover.resource;
 
-import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
+import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentResultDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.service.RoboticHooverService;
 import lombok.AllArgsConstructor;
@@ -18,8 +18,8 @@ public class RoboticHooverController {
     private final RoboticHooverService roboticHooverService;
 
     @PostMapping(value = "/robotic-hoover/clean", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<CleanEnvironmentDto> clean(@RequestBody UncleanEnvironmentDto uncleanEnvironmentDto) {
-        CleanEnvironmentDto cleanEnvironmentDto = roboticHooverService.cleanEnvironment(uncleanEnvironmentDto);
-        return ResponseEntity.ok(cleanEnvironmentDto);
+    public ResponseEntity<CleanEnvironmentResultDto> clean(@RequestBody UncleanEnvironmentDto uncleanEnvironmentDto) {
+        CleanEnvironmentResultDto cleanEnvironmentResultDto = roboticHooverService.cleanEnvironment(uncleanEnvironmentDto);
+        return ResponseEntity.ok(cleanEnvironmentResultDto);
     }
 }
