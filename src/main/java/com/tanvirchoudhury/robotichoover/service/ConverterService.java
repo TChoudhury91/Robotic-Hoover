@@ -17,10 +17,11 @@ import static lombok.AccessLevel.PRIVATE;
 public class ConverterService {
 
     public static UncleanEnvironment convertToUncleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
+        List<Integer> roomSize = uncleanEnvironmentDto.getRoomSize();
         return UncleanEnvironment.builder()
-                .roomSize(extractCoordinates(uncleanEnvironmentDto.getRoomSize()))
+                .roomSize(extractCoordinates(roomSize))
                 .coords(extractCoordinates(uncleanEnvironmentDto.getCoords()))
-                .patches(extractListOfCoordinates(uncleanEnvironmentDto.getPatches()))
+                .patches(extractPatchOfCoordinates(uncleanEnvironmentDto.getPatches(), roomSize))
                 .instructions(uncleanEnvironmentDto.getInstructions().toUpperCase())
                 .build();
     }
@@ -30,7 +31,11 @@ public class ConverterService {
     }
 
     //TODO do not include patches of dirt that are y
-    private static Patches extractListOfCoordinates(List<List<Integer>> listOfCoordinates) {
+    private static Patches extractPatchOfCoordinates(List<List<Integer>> listOfCoordinates, List<Integer> roomSize) {
+        List<List<Integer>> listOfCoordinates = listOfCoordinates.stream()
+                .filter(coords -> coords.get(1) != roomSize.get(1))
+                .collect(toList());
+
         List<Coordinates> coordinates = listOfCoordinates.stream()
                 .map(ConverterService::extractCoordinates)
                 .collect(toList());

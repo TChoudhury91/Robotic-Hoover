@@ -2,6 +2,7 @@ package com.tanvirchoudhury.robotichoover.service
 
 import com.tanvirchoudhury.robotichoover.model.db.Coordinates
 import com.tanvirchoudhury.robotichoover.repository.UncleanEnvironmentRepository
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
@@ -22,6 +23,7 @@ class RoboticHooverServiceTest extends Specification {
         subject = new RoboticHooverService(uncleanEnvironmentRepository)
     }
 
+    @Ignore
     def "Cleaning process cleans environment"() {
 
         when: "Cleaning process is started"
@@ -99,15 +101,25 @@ class RoboticHooverServiceTest extends Specification {
         'W'            | [-1, 0]
     }
 
+    @Unroll
     def "When a hoover goes over a patch, that patch is removed from CurrentCleanProcess"() {
 
         given:
-        def currentClean = aCurrentCleanWithAGivenPatch(new Coordinates(3, 1))
+        def currentClean = aCurrentCleanWithAGivenPatch(patches)
 
         when:
-        def result = subject.moveHoover(currentClean, 'E' as char)
+        def result = subject.moveHoover(currentClean, cardinalDirections as char)
 
         then:
         result.patches.isEmpty()
+
+        where:
+        cardinalDirections | patches
+        'N'                | new Coordinates(1, 2)
+        'E'                | new Coordinates(2, 1)
+        'S'                | new Coordinates(1, 0)
+        'W'                | new Coordinates(0, 1)
+
     }
+
 }
