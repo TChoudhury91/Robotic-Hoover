@@ -4,19 +4,16 @@ import com.tanvirchoudhury.robotichoover.model.db.Coordinates;
 import com.tanvirchoudhury.robotichoover.model.db.Patches;
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static lombok.AccessLevel.PRIVATE;
 
 @Service
-@NoArgsConstructor(access = PRIVATE)
 public class ConverterService {
 
-    public static UncleanEnvironment convertToUncleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
+    public UncleanEnvironment convertToUncleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
         List<Integer> roomSize = uncleanEnvironmentDto.getRoomSize();
         return UncleanEnvironment.builder()
                 .roomSize(extractCoordinates(roomSize))

@@ -1,18 +1,13 @@
 package com.tanvirchoudhury.robotichoover.service;
 
 import com.tanvirchoudhury.robotichoover.model.CurrentCleanStatus;
-import com.tanvirchoudhury.robotichoover.model.db.CleanEnvironment;
 import com.tanvirchoudhury.robotichoover.model.db.Coordinates;
 import com.tanvirchoudhury.robotichoover.model.db.UncleanEnvironment;
 import com.tanvirchoudhury.robotichoover.model.dto.CleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
 import com.tanvirchoudhury.robotichoover.repository.UncleanEnvironmentRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.tanvirchoudhury.robotichoover.service.ConverterService.convertToUncleanEnvironment;
-import static com.tanvirchoudhury.robotichoover.service.ValidatorService.isValid;
 
 @Service
 @AllArgsConstructor
@@ -23,11 +18,13 @@ public class RoboticHooverService {
     private static final char SOUTH = 'S';
     private static final char WEST = 'W';
 
+    private final ConverterService converterService;
     private final UncleanEnvironmentRepository uncleanEnvironmentRepository;
+    private final ValidatorService validatorService;
 
     public CleanEnvironmentDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
-        if (isValid(uncleanEnvironmentDto)) {
-            UncleanEnvironment uncleanEnvironment = convertToUncleanEnvironment(uncleanEnvironmentDto);
+        if (validatorService.isValid(uncleanEnvironmentDto)) {
+            UncleanEnvironment uncleanEnvironment = converterService.convertToUncleanEnvironment(uncleanEnvironmentDto);
             uncleanEnvironmentRepository.save(uncleanEnvironment);
         }
 
@@ -44,11 +41,9 @@ public class RoboticHooverService {
 
     private CurrentCleanStatus startCleaningProcess(UncleanEnvironment uncleanEnvironment) {
         CurrentCleanStatus currentCleanStatus = createCurrentCleanStatus(uncleanEnvironment);
-
         for (char c : uncleanEnvironment.getInstructions().toCharArray()) {
             currentCleanStatus = moveHoover(currentCleanStatus, c);
         }
-
         return currentCleanStatus;
     }
 

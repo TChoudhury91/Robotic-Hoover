@@ -17,11 +17,17 @@ class RoboticHooverServiceTest extends Specification {
     @Subject
     RoboticHooverService subject
 
+    ConverterService converterService
+    ValidatorService validatorService
+
     UncleanEnvironmentRepository uncleanEnvironmentRepository
 
     def setup() {
+        converterService = new ConverterService()
         uncleanEnvironmentRepository = Mock()
-        subject = new RoboticHooverService(uncleanEnvironmentRepository)
+        validatorService = new ValidatorService()
+
+        subject = new RoboticHooverService(converterService, uncleanEnvironmentRepository, validatorService)
     }
 
     def "Cleaning process cleans a patch"() {

@@ -16,17 +16,23 @@ public class ValidatorService {
     private static final int MAX_SINGLE_PAIR_COORDS_SIZE = 2;
     private static final int MIN_X_Y = 0;
 
-    public static boolean isValid(UncleanEnvironmentDto uncleanEnvironmentDto) {
+    private static final String EMPTY_INPUT_ERR = "Empty input data inserted";
+    private static final String INVALID_ROOM_SIZE_COORD_ERR = "Invalid roomSize, need to provide a single and positive (x,y) coordinates";
+    private static final String INVALID_COORDS_COORD_ERR = "Invalid coords, need to provide a single and positive (x,y) coordinates";
+    private static final String INVALID_PATCHES_ERR = "Invalid patches, need to provide a list of positive (x,y) coordinates";
+    private static final String INVALID_CARDINAL_DIR_ERR = "Invalid cardinal directions, N E S W are permitted";
+
+    public boolean isValid(UncleanEnvironmentDto uncleanEnvironmentDto) {
         if (isMandatoryInputDataEmpty(uncleanEnvironmentDto)) {
-            throw new InvalidInputDataException("Empty input data inserted");
+            reportError(EMPTY_INPUT_ERR);
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getRoomSize())) {
-            throw new InvalidInputDataException("Invalid roomSize, need to provide a single and positive (x,y) coordinates");
+            reportError(INVALID_ROOM_SIZE_COORD_ERR);
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getCoords())) {
-            throw new InvalidInputDataException("Invalid coords, need to provide a single and positive (x,y) coordinates");
+            reportError(INVALID_COORDS_COORD_ERR);
         } else if (!isListOfCoordsValid(uncleanEnvironmentDto.getPatches())) {
-            throw new InvalidInputDataException("Invalid patches, need to provide a list of positive (x,y) coordinates");
+            reportError(INVALID_PATCHES_ERR);
         } else if (!isInstructionsValid(uncleanEnvironmentDto.getInstructions())) {
-            throw new InvalidInputDataException("Invalid cardinal directions, N E S W are permitted");
+            reportError(INVALID_CARDINAL_DIR_ERR);
         }
         return true;
     }
@@ -58,4 +64,9 @@ public class ValidatorService {
         }
         return true;
     }
+
+    private void reportError(String errorMessage) {
+        throw new InvalidInputDataException(errorMessage);
+    }
+
 }
