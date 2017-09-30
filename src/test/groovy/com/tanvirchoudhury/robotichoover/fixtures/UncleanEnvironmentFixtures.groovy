@@ -22,6 +22,14 @@ class UncleanEnvironmentFixtures {
                 instructions: "NNESEESWNWW")
     }
 
+    static UncleanEnvironment uncleanEnvironmentWithMultipleCleanedPatchesScenario() {
+        new UncleanEnvironment(
+                roomSize: getCoords(4, 4),
+                coords: getCoords(1, 1),
+                patches: getPatches([[1, 2], [2, 2], [2, 1], [3,3]]),
+                instructions: "NESW")
+    }
+
     static Coordinates getCoords(x, y) {
         new Coordinates(x, y)
     }

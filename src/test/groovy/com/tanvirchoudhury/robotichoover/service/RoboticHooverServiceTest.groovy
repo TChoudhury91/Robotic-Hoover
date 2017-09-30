@@ -10,6 +10,7 @@ import spock.lang.Unroll
 import static com.tanvirchoudhury.robotichoover.fixtures.CurrentCleanStatusFixtures.aCurrentClean
 import static com.tanvirchoudhury.robotichoover.fixtures.CurrentCleanStatusFixtures.aCurrentCleanWithAGivenPatch
 import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentFixtures.uncleanEnvironmentFromTestExample
+import static com.tanvirchoudhury.robotichoover.fixtures.UncleanEnvironmentFixtures.uncleanEnvironmentWithMultipleCleanedPatchesScenario
 
 class RoboticHooverServiceTest extends Specification {
 
@@ -23,17 +24,26 @@ class RoboticHooverServiceTest extends Specification {
         subject = new RoboticHooverService(uncleanEnvironmentRepository)
     }
 
-    @Ignore
-    def "Cleaning process cleans environment"() {
+    def "Cleaning process cleans a patch"() {
 
         when: "Cleaning process is started"
         def result = subject.startCleaningProcess(uncleanEnvironmentFromTestExample())
 
         then: "Returned result of the cleaning process is as expected"
-        result.coords.x == 1
-        result.coords.y == 3
+        result.currentCoords.x == 1
+        result.currentCoords.y == 3
+        result.patchesCleaned == 1
+    }
 
-        result.patches == 1
+    def "Cleaning process cleans multiple patches"() {
+
+        when: "Cleaning process is started"
+        def result = subject.startCleaningProcess(uncleanEnvironmentWithMultipleCleanedPatchesScenario())
+
+        then: "Returned result of the cleaning process is as expected"
+        result.currentCoords.x == 1
+        result.currentCoords.y == 1
+        result.patchesCleaned == 3
     }
 
     def "Unclean Environment is converted to a CurrentCleanStatus"() {
@@ -102,7 +112,7 @@ class RoboticHooverServiceTest extends Specification {
     }
 
     @Unroll
-    def "When a hoover goes over a patch, that patch is removed from CurrentCleanProcess"() {
+    def "When a hoover goes over a patch, that patch is removed from CurrentCleanProcess and patchesCleaned is incremented"() {
 
         given:
         def currentClean = aCurrentCleanWithAGivenPatch(patches)
@@ -112,6 +122,7 @@ class RoboticHooverServiceTest extends Specification {
 
         then:
         result.patches.isEmpty()
+        result.patchesCleaned == 1
 
         where:
         cardinalDirections | patches

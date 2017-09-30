@@ -48,21 +48,21 @@ class ConverterServiceTest extends Specification {
         "nwse"       | "NWSE"
     }
 
-    def "Patches with Y coordiantes matching the room size Y coordinates are not included"() {
+    def "Patches with X/Y coordiantes matching the room size X/Y coordinates are not included, as they cant be cleaned due to room wall"() {
 
         given: "A room size"
         def roomSize = [4, 4]
 
         and: "A list of patches including a patch that matches Y coordinate of the room size"
-        def patches = [[1, 1], [1, 2], [3,4], [1,4]]
+        def patches = [[1, 1], [3, 4], [1, 4], [4,1], [4,3]]
 
         when: "Extracting patches from a list of coordinates"
-        def result = subject.extractListOfCoordinates(patches, roomSize)
+        def result = subject.extractPatchCoordinates(patches, roomSize)
 
         then: "Patches that cannot be cleaned are not included"
         def patchCoordinates = result.coordinates
-        patchCoordinates.size() == 2
-        patchCoordinates.find {it ->
+        patchCoordinates.size() == 1
+        patchCoordinates.forEach { it ->
             assert it.y != 4
         }
     }

@@ -23,8 +23,7 @@ public class RoboticHooverService {
     private static final char SOUTH = 'S';
     private static final char WEST = 'W';
 
-    @Autowired
-    UncleanEnvironmentRepository uncleanEnvironmentRepository;
+    private final UncleanEnvironmentRepository uncleanEnvironmentRepository;
 
     public CleanEnvironmentDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
         if (isValid(uncleanEnvironmentDto)) {
@@ -38,15 +37,19 @@ public class RoboticHooverService {
     private CurrentCleanStatus createCurrentCleanStatus(UncleanEnvironment uncleanEnvironment) {
         return new CurrentCleanStatus(uncleanEnvironment.getCoords(),
                 uncleanEnvironment.getPatches().getCoordinates(),
+                0,
                 uncleanEnvironment.getRoomSize());
     }
 
 
-    private CleanEnvironment startCleaningProcess(UncleanEnvironment uncleanEnvironment) {
+    private CurrentCleanStatus startCleaningProcess(UncleanEnvironment uncleanEnvironment) {
         CurrentCleanStatus currentCleanStatus = createCurrentCleanStatus(uncleanEnvironment);
 
+        for (char c : uncleanEnvironment.getInstructions().toCharArray()) {
+            currentCleanStatus = moveHoover(currentCleanStatus, c);
+        }
 
-        return null;
+        return currentCleanStatus;
     }
 
     private CurrentCleanStatus moveHoover(CurrentCleanStatus currentCleanStatus, char cardinalDirection) {
@@ -56,11 +59,12 @@ public class RoboticHooverService {
         currentCoords.setX(currentCoords.getX() + cardinalDirectionCoords.getX());
         currentCoords.setY(currentCoords.getY() + cardinalDirectionCoords.getY());
 
-        for(int i = 0; i < currentCleanStatus.getPatches().size(); i++) {
+        for (int i = 0; i < currentCleanStatus.getPatches().size(); i++) {
             Coordinates patchCoords = currentCleanStatus.getPatches().get(i);
 
-            if(currentCoords.getX() == patchCoords.getX() && currentCoords.getY() == patchCoords.getY()) {
+            if (currentCoords.getX() == patchCoords.getX() && currentCoords.getY() == patchCoords.getY()) {
                 currentCleanStatus.getPatches().remove(i);
+                currentCleanStatus.setPatchesCleaned(currentCleanStatus.getPatchesCleaned() + 1);
             }
         }
 

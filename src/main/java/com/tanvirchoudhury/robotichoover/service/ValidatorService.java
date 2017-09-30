@@ -14,16 +14,17 @@ import static org.hibernate.validator.internal.util.StringHelper.isNullOrEmptySt
 public class ValidatorService {
 
     private static final int MAX_SINGLE_PAIR_COORDS_SIZE = 2;
+    private static final int MIN_X_Y = 0;
 
     public static boolean isValid(UncleanEnvironmentDto uncleanEnvironmentDto) {
         if (isMandatoryInputDataEmpty(uncleanEnvironmentDto)) {
             throw new InvalidInputDataException("Empty input data inserted");
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getRoomSize())) {
-            throw new InvalidInputDataException("Invalid roomSize, need to provide (x,y) coordinates");
+            throw new InvalidInputDataException("Invalid roomSize, need to provide a single and positive (x,y) coordinates");
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getCoords())) {
-            throw new InvalidInputDataException("Invalid coords, need to provide (x,y) coordinates");
+            throw new InvalidInputDataException("Invalid coords, need to provide a single and positive (x,y) coordinates");
         } else if (!isListOfCoordsValid(uncleanEnvironmentDto.getPatches())) {
-            throw new InvalidInputDataException("Invalid patches, need to provide a single list of (x,y) coordinates");
+            throw new InvalidInputDataException("Invalid patches, need to provide a list of positive (x,y) coordinates");
         } else if (!isInstructionsValid(uncleanEnvironmentDto.getInstructions())) {
             throw new InvalidInputDataException("Invalid cardinal directions, N E S W are permitted");
         }
@@ -38,7 +39,9 @@ public class ValidatorService {
     }
 
     private static boolean isCoordsASinglePair(List<Integer> coordinates) {
-        return coordinates.size() == MAX_SINGLE_PAIR_COORDS_SIZE;
+        return coordinates.size() == MAX_SINGLE_PAIR_COORDS_SIZE &&
+                coordinates.stream()
+                        .allMatch(coords -> coords >= MIN_X_Y);
     }
 
     private static boolean isListOfCoordsValid(List<List<Integer>> coordinates) {

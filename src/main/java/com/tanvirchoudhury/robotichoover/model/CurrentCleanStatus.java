@@ -17,5 +17,8 @@ public class CurrentCleanStatus {
     @Setter
     private List<Coordinates> patches;
 
+    @Setter
+    private int patchesCleaned;
+
     private final Coordinates roomSize;
 }
