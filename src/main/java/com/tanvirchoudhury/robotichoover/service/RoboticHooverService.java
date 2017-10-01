@@ -24,16 +24,17 @@ public class RoboticHooverService {
     private final CleanEnvironmentResultRepository cleanEnvironmentResultRepository;
     private final ConverterService converterService;
     private final UncleanEnvironmentRepository uncleanEnvironmentRepository;
-    private final ValidatorService validatorService;
 
     @Transactional
     public CleanEnvironmentResultDto cleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
-        validatorService.validateUncleanEnvironment(uncleanEnvironmentDto);
+        ValidatorService.validateUncleanEnvironment(uncleanEnvironmentDto);
         UncleanEnvironment uncleanEnvironment = converterService.convertToUncleanEnvironment(uncleanEnvironmentDto);
         uncleanEnvironmentRepository.save(uncleanEnvironment);
+
         CurrentCleanStatus currentCleanStatus = startCleaningProcess(uncleanEnvironment);
         CleanEnvironmentResult cleanEnvironmentResult = converterService.convertToCleanEnvironment(currentCleanStatus);
         cleanEnvironmentResultRepository.save(cleanEnvironmentResult);
+        
         return converterService.convertToCleanEnvironmentResultDto(cleanEnvironmentResult);
     }
 

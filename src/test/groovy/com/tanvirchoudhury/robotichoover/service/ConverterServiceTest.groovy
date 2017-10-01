@@ -56,10 +56,10 @@ class ConverterServiceTest extends Specification {
         given: "A room size"
         def roomSize = [4, 4]
 
-        and: "A list of patches including a patch that matches Y coordinate of the room size"
+        and: "A list of patchesCleaned including a patch that matches Y coordinate of the room size"
         def patches = [[1, 1], [3, 4], [1, 4], [4,1], [4,3]]
 
-        when: "Extracting patches from a list of coordinates"
+        when: "Extracting patchesCleaned from a list of coordinates"
         def result = subject.extractPatchCoordinates(patches, roomSize)
 
         then: "Patches that cannot be cleaned are not included"

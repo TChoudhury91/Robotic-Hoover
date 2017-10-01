@@ -69,7 +69,7 @@ public class ConverterService {
         List<Integer> coords = new ArrayList<>();
         coords.add(cleanEnvironmentResult.getCoords().getX());
         coords.add(cleanEnvironmentResult.getCoords().getY());
-        return new CleanEnvironmentResultDto(coords, cleanEnvironmentResult.getPatches());
+        return new CleanEnvironmentResultDto(coords, cleanEnvironmentResult.getPatchesCleaned());
     }
 
 

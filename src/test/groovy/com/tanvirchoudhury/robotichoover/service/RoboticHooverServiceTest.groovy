@@ -17,7 +17,6 @@ class RoboticHooverServiceTest extends Specification {
     RoboticHooverService subject
 
     ConverterService converterService
-    ValidatorService validatorService
 
     CleanEnvironmentResultRepository cleanEnvironmentResultRepository
     UncleanEnvironmentRepository uncleanEnvironmentRepository
@@ -26,9 +25,8 @@ class RoboticHooverServiceTest extends Specification {
         cleanEnvironmentResultRepository = Mock()
         converterService = new ConverterService()
         uncleanEnvironmentRepository = Mock()
-        validatorService = new ValidatorService()
 
-        subject = new RoboticHooverService(cleanEnvironmentResultRepository, converterService, uncleanEnvironmentRepository, validatorService)
+        subject = new RoboticHooverService(cleanEnvironmentResultRepository, converterService, uncleanEnvironmentRepository)
     }
 
     def "Cleaning process cleans a patch"() {

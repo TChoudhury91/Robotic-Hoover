@@ -28,14 +28,17 @@ class ValidatorServiceTest extends Specification {
         ex.getMessage() == message
 
         where:
-        uncleanEnv                                           | message
-        aUncleanEnvironmentDto(roomSize: [1, 2, 3, 4, 5])    | "Invalid roomSize, need to provide a single and positive (x,y) coordinates"
-        aUncleanEnvironmentDto(coords: [1, 2, 3, 4, 5])      | "Invalid coords, need to provide a single and positive (x,y) coordinates"
-        aUncleanEnvironmentDto(patches: [[1, 2], [2, 3, 5]]) | "Invalid patches, need to provide a list of positive (x,y) coordinates"
-        aUncleanEnvironmentDto(instructions: "YOTI")         | "Invalid cardinal directions, N E S W are permitted"
-        aUncleanEnvironmentDto(roomSize: [-1, 2])            | "Invalid roomSize, need to provide a single and positive (x,y) coordinates"
-        aUncleanEnvironmentDto(coords: [3, -4])              | "Invalid coords, need to provide a single and positive (x,y) coordinates"
-        aUncleanEnvironmentDto(patches: [[1, 2], [-2, -3]])  | "Invalid patches, need to provide a list of positive (x,y) coordinates"
+        uncleanEnv                                                          | message
+        aUncleanEnvironmentDto(roomSize: [1, 2, 3, 4, 5])                   | "Invalid roomSize, need to provide a single and positive (x,y) coordinates"
+        aUncleanEnvironmentDto(coords: [1, 2, 3, 4, 5])                     | "Invalid coords, need to provide a single and positive (x,y) coordinates"
+        aUncleanEnvironmentDto(patches: [[1, 2], [2, 3, 5]])                | "Invalid patches, need to provide a list of positive (x,y) coordinates"
+        aUncleanEnvironmentDto(instructions: "YOTI")                        | "Invalid cardinal directions, N E S W are permitted"
+        aUncleanEnvironmentDto(roomSize: [-1, 2])                           | "Invalid roomSize, need to provide a single and positive (x,y) coordinates"
+        aUncleanEnvironmentDto(coords: [3, -4])                             | "Invalid coords, need to provide a single and positive (x,y) coordinates"
+        aUncleanEnvironmentDto(patches: [[1, 2], [-2, -3]])                 | "Invalid patches, need to provide a list of positive (x,y) coordinates"
+        aUncleanEnvironmentDto(roomSize: [5, 5], coords: [5, 6])            | "Invalid coordinates, outside of room boundary"
+        aUncleanEnvironmentDto(roomSize: [4, 4], patches: [[1, 2], [6, 5]]) | "Invalid coordinates, outside of room boundary"
+
     }
 
     @Unroll

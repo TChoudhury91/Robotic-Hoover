@@ -61,6 +61,6 @@ class RoboticHooverServiceIT extends Specification {
         cleanEnvironmentResult.coords.x == 1
         cleanEnvironmentResult.coords.y == 3
 
-        cleanEnvironmentResult.patches == 1
+        cleanEnvironmentResult.patchesCleaned == 1
     }
 }

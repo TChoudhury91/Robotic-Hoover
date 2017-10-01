@@ -40,9 +40,6 @@ class RoboticHooverControllerIT extends Specification {
         def cleanEnvironmentResultDto = result.getBody()
         cleanEnvironmentResultDto.getCoords()[0] == 1
         cleanEnvironmentResultDto.getCoords()[1] == 3
-
         cleanEnvironmentResultDto.patches == 1
-
     }
-
 }

@@ -5,6 +5,7 @@ import com.tanvirchoudhury.robotichoover.model.dto.UncleanEnvironmentDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.tanvirchoudhury.robotichoover.model.enums.DirectionEnum.*;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
@@ -21,8 +22,9 @@ public class ValidatorService {
     private static final String INVALID_COORDS_COORD_ERR = "Invalid coords, need to provide a single and positive (x,y) coordinates";
     private static final String INVALID_PATCHES_ERR = "Invalid patches, need to provide a list of positive (x,y) coordinates";
     private static final String INVALID_CARDINAL_DIR_ERR = "Invalid cardinal directions, N E S W are permitted";
+    private static final String OUTSIDE_OF_BOUNDARY_ERR = "Invalid coordinates, outside of room boundary";
 
-    public void validateUncleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
+    public static void validateUncleanEnvironment(UncleanEnvironmentDto uncleanEnvironmentDto) {
         if (isMandatoryInputDataEmpty(uncleanEnvironmentDto)) {
             reportError(EMPTY_INPUT_ERR);
         } else if (!isCoordsASinglePair(uncleanEnvironmentDto.getRoomSize())) {
@@ -33,6 +35,8 @@ public class ValidatorService {
             reportError(INVALID_PATCHES_ERR);
         } else if (!isInstructionsValid(uncleanEnvironmentDto.getInstructions())) {
             reportError(INVALID_CARDINAL_DIR_ERR);
+        } else if (!isCoordinatesWithinRoomBoundary(uncleanEnvironmentDto)) {
+            reportError(OUTSIDE_OF_BOUNDARY_ERR);
         }
     }
 
@@ -55,7 +59,6 @@ public class ValidatorService {
     }
 
     private static boolean isInstructionsValid(String instructions) {
-
         for (char c : instructions.toUpperCase().toCharArray()) {
             if (c != NORTH.getValue() && c != EAST.getValue() && c != SOUTH.getValue() && c != WEST.getValue()) {
                 return false;
@@ -64,7 +67,23 @@ public class ValidatorService {
         return true;
     }
 
-    private void reportError(String errorMessage) {
+    private static boolean isCoordinatesWithinRoomBoundary(UncleanEnvironmentDto uncleanEnvironmentDto) {
+        boolean isCoordsWithinRoomBoundary = isWithinBoundaryChecker(uncleanEnvironmentDto.getCoords(), uncleanEnvironmentDto.getRoomSize());
+        boolean arePatchesWithinRoomBoundary = uncleanEnvironmentDto.getPatches()
+                .stream()
+                .allMatch(coords -> isWithinBoundaryChecker(coords, uncleanEnvironmentDto.getRoomSize()));
+        return isCoordsWithinRoomBoundary && arePatchesWithinRoomBoundary;
+
+    }
+
+    private static boolean isWithinBoundaryChecker(List<Integer> coordinates, List<Integer> roomBoundary) {
+        return IntStream
+                .range(0, roomBoundary.size())
+                .allMatch(rng -> coordinates.get(rng) <= roomBoundary.get(rng));
+
+    }
+
+    private static void reportError(String errorMessage) {
         throw new InvalidInputDataException(errorMessage);
     }
 

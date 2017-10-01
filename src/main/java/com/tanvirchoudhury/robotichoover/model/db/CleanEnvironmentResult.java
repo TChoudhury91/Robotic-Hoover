@@ -18,5 +18,5 @@ public class CleanEnvironmentResult extends BaseDomainObject {
     @JoinColumn(name = "coords_coordinates_id")
     private Coordinates coords;
 
-    private int patches;
+    private int patchesCleaned;
 }

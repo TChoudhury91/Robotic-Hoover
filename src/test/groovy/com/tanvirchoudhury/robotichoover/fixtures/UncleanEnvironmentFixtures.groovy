@@ -10,7 +10,7 @@ class UncleanEnvironmentFixtures {
         new UncleanEnvironment(
                 roomSize: params.roomSize,
                 coords: params.coords,
-                patches: params.patches,
+                patches: params.getPatchesCleaned,
                 instructions: params.instructions)
     }
 
